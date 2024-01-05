@@ -1,6 +1,6 @@
-# An Alignment-based Approach for Calculating PARSEVAL Measures
+# A Novel Alignment-based Approach for Calculating PARSEVAL Measures
 
-This github repo provides the following: 
+This GitHub repository includes the following notebooks: 
 
 1. a python notebook featuring Penn Treebank examples (Section 01, copied from `nltk_data` — refer to `Installing NLTK Data` at https://www.nltk.org/data.html) demonstrating the process of end-to-end testing (from raw text to constituency parsing)
 
