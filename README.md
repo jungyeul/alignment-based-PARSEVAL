@@ -1,9 +1,9 @@
-# A Novel Alignment-based Approach for Calculating PARSEVAL Measures
+# Alignment-based PARSEVAL Measures
 
-This GitHub repository includes the following notebooks: 
+This GitHub repository includes the following case studies: 
 
-1. a python notebook featuring Penn Treebank examples (Section 01, copied from `nltk_data` — refer to `Installing NLTK Data` at https://www.nltk.org/data.html) demonstrating the process of end-to-end testing (from raw text to constituency parsing)
+1. Evaluation for Section 23 of the English Penn treebank
 
-2. a python notebook containing examples of sentence and word mismatches 
+2. Bug cases identified by `evalb`
 
-3. a pyhton notebook containing failed cases from the evalb tool (copied from the latest version of `EVALB.tgz` at https://nlp.cs.nyu.edu/evalb/), where the current proposed method successfully evaluates them. 
+3. Korean end-to-end parsing evaluation 
