@@ -19,6 +19,7 @@ english_token_exception = {'\'\'':'\"',  '`':'\'', '``': '\"', 'ca': 'can', 'wo'
 DELETED_LABELS = None
 CHECK_CONS_LABELS = True
 LANGUAGE = 'default'
+IGNORE_EMPTY_CONS = True
 
 TOTAL_match = 0
 TOTAL_bn1 = 0
@@ -97,6 +98,7 @@ class EvalFileWriter:
     def write_eval_output(self):
         global TOTAL_match, TOTAL_bn1, TOTAL_bn2, TOTAL_crossing, TOTAL_no_crossing
         
+        self.write_line(self._SEP_LINE)
         output = ""
     
         if TOTAL_bn1 > 0 and TOTAL_bn2 > 0:
@@ -671,6 +673,10 @@ def get_eval_result(id, sys_words, gold_words, sys_cons, gold_cons, sys_tree, go
     global TOT40_match, TOT40_bn1, TOT40_bn2, TOT40_crossing, TOT40_no_crossing
     global TOT40_2L_crossing, TOT40_word, TOT40_correct_tag
     global TOT40_sent, TOT40_error_sent, TOT40_skip_sent, TOT40_comp_sent
+    
+    if IGNORE_EMPTY_CONS:
+        sys_cons = [con for con in sys_cons if con[0] != ""]
+        gold_cons = [con for con in gold_cons if con[0] != ""]
     
     matched_bracket, cross_bracket = cal_bracket(sys_cons, gold_cons)
     sys_tags = traverse_tree(sys_tree)
