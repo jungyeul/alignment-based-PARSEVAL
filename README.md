@@ -1,6 +1,6 @@
 # Alignment-based PARSEVAL Measures
 ---
-jp-errant or jointly preprocessed errant. 
+`jp-errant` or jointly preprocessed `errant`. 
 
 
 This GitHub repository includes the following case studies: 
