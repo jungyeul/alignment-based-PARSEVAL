@@ -14,7 +14,7 @@ We utilized the following resources for our parsing evaluation to simulate the e
 
 3. A Berkeley parser model for Korean trained on the Korean Sejong treebank {park-hong-cha:2016:PACLIC} (https://zenodo.org/records/3995084).
 
-Given our sentence boundary detection and tokenization processes, there is a possibility of encountering sentence and word mismatches during constituency parsing evaluation. The system results show 123 sentences and 4367 morphemes because differences in sentence boundaries and tokenization results. During the evaluation, `JP-evalb` successfully aligns even in the presence of sentence and word mismatches, and subsequently, the results of constituency parsing are assessed. 
+Given our sentence boundary detection and tokenization processes, there is a possibility of encountering sentence and word mismatches during constituency parsing evaluation. The system results show 123 sentences and 4367 morphemes because differences in sentence boundaries and tokenization results. During the evaluation, `jp-evalb` successfully aligns even in the presence of sentence and word mismatches, and subsequently, the results of constituency parsing are assessed. 
 
 
 
