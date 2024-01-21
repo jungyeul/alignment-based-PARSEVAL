@@ -15,3 +15,11 @@ We utilized the following resources for our parsing evaluation to simulate the e
 3. A Berkeley parser model for Korean trained on the Korean Sejong treebank {park-hong-cha:2016:PACLIC} (https://zenodo.org/records/3995084).
 
 Given our sentence boundary detection and tokenization processes, there is a possibility of encountering sentence and word mismatches during constituency parsing evaluation. The system results show 123 sentences and 4367 morphemes because differences in sentence boundaries and tokenization results. During the evaluation, `JP-evalb` successfully aligns even in the presence of sentence and word mismatches, and subsequently, the results of constituency parsing are assessed. 
+
+
+
+- Kim, M., & Park, J. (2022). A note on constituent parsing for Korean. Natural Language Engineering, 28(2), 199–222. https://doi.org/10.1017/S1351324920000479
+- Park, J., & Tyers, F. (2019). A New Annotation Scheme for the Sejong Part-of-speech Tagged Corpus. Proceedings of the 13th Linguistic Annotation Workshop, 195–202. https://www.aclweb.org/anthology/W19-4022
+- Park, J., Hong, J.-P., & Cha, J.-W. (2016). Korean Language Resources for Everyone. Proceedings of the 30th Pacific Asia Conference on Language, Information and Computation: Oral Papers (PACLIC 30), 49–58. http://aclweb.org/anthology/Y/Y16/Y16-2002.pdf
+
+
