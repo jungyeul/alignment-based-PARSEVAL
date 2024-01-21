@@ -1,0 +1,39 @@
+Current time: 01/21/24 19:09:39.411214000 UTC
+  Sent.                        Matched  Bracket   Cross        Correct Tag
+ ID  Len.  Stat. Recal  Prec.  Bracket gold test Bracket Words  Tags Accracy
+============================================================================
+   1   37    0   77.27  62.96    17     22   27      5     37    30    81.08
+   2   21    0   69.23  60.00     9     13   15      2     21    17    80.95
+   3   47    0   77.78  80.00    28     36   35      4     48    43    89.58
+   4   26    0   33.33  35.29     6     18   17      8     27    19    70.37
+   5   44    0   42.31  32.35    11     26   34     17     44    33    75.00
+                 61.74  55.47    71   115   128     36    177   142    80.23
+=== Summary ===
+-- All --
+Number of sentence        =      5
+Number of Error sentence  =      0
+Number of Skip  sentence  =      0
+Number of Valid sentence  =      5
+Bracketing Recall         =  61.74
+Bracketing Precision      =  55.47
+Bracketing FMeasure       =  58.44
+Complete match            =   0.00
+Average crossing          =   7.20
+No crossing               =   0.00
+2 or less crossing        =  20.00
+Tagging accuracy          =  80.23
+
+-- len<=40 --
+Number of sentence        =      3
+Number of Error sentence  =      0
+Number of Skip  sentence  =      0
+Number of Valid sentence  =      3
+Bracketing Recall         =  60.38
+Bracketing Precision      =  54.24
+Bracketing FMeasure       =  57.14
+Complete match            =   0.00
+Average crossing          =   5.00
+No crossing               =   0.00
+2 or less crossing        =  33.33
+Tagging accuracy          =  77.65
+Current time: 01/21/24 19:09:39.468532000 UTC
