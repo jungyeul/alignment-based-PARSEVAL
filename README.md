@@ -3,15 +3,6 @@
 `jp-errant` or Jointly Preprocessed `errant`. 
 
 
-This GitHub repository includes the following case studies: 
-
-1. Evaluation for Section 23 of the English Penn treebank
-
-2. Bug cases identified by `evalb`
-
-3. Korean end-to-end parsing evaluation 
-
-
 USAGE:
 ```
 % jp-evalb.py gold_parsed_file system_parsed_file
@@ -26,4 +17,15 @@ OUTPUT:
 - [`Cross Bracket`] The number of cross brackets. 
 
 - [`Words`, `Correct Tags`, `Tag Accuracy`] Evaluation of the number of words, correct POS tags, and POS tagging accuracy. It's important to highlight that `evalb` excludes any problematic symbols and punctuation marks when counting words and correct POS tags. Our results include all tokens in the given sentence, and accuracy is calculated based on the correct number of POS-tagged words in comparison to the gold sentence.
+
+
+This GitHub repository includes the following case studies: 
+
+1. Evaluation for Section 23 of the English Penn treebank
+
+2. Bug cases identified by `evalb`
+
+3. Korean end-to-end parsing evaluation 
+
+
 
