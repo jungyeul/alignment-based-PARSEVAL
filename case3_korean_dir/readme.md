@@ -5,8 +5,7 @@ START: 2024-01-21 12:02:24.911305
 ```
 
 
-We perform a thorough parsing evaluation for Korean, wherein the sequences of sentences and tokens, system-segmented for use as constituency parsing input, may diverge from the corresponding gold sequences of sentences and tokens.
-We utilized the following resources for our parsing evaluation to simulate the end-to-end process:
+We conduct a comprehensive parsing evaluation for Korean, using system-segmented sequences as input for constituency parsing. These sequences may deviate from the corresponding gold standard sentences and tokens. We utilized the following resources for our parsing evaluation to simulate the end-to-end process:
 
 1. A set of 148 test sentences with 4538 tokens (morphemes)  from `BGAA0001` of the Korean Sejong treebank, as detailed in {kim-park:2022}. In the present experiment, all sentences have been consolidated into a single text block. 
 
