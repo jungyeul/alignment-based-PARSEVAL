@@ -5,7 +5,7 @@
 
 USAGE:
 ```
-% jp-evalb.py gold_parsed_file system_parsed_file
+% python3 jp-evalb.py gold_parsed_file system_parsed_file
 ```
 
 OUTPUT:
