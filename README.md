@@ -1,6 +1,6 @@
 # Alignment-based PARSEVAL Measures
 ---
-`jp-errant` or Jointly Preprocessed `errant`. 
+`jp-evalb` or Jointly Preprocessed `evalb`. 
 
 
 USAGE:
