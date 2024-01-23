@@ -17,8 +17,8 @@ Given our sentence boundary detection and tokenization processes, there is a pos
 
 
 
-- Kim, M., & Park, J. (2022). A note on constituent parsing for Korean. Natural Language Engineering, 28(2), 199–222. https://doi.org/10.1017/S1351324920000479
-- Park, J., & Tyers, F. (2019). A New Annotation Scheme for the Sejong Part-of-speech Tagged Corpus. Proceedings of the 13th Linguistic Annotation Workshop, 195–202. https://www.aclweb.org/anthology/W19-4022
-- Park, J., Hong, J.-P., & Cha, J.-W. (2016). Korean Language Resources for Everyone. Proceedings of the 30th Pacific Asia Conference on Language, Information and Computation: Oral Papers (PACLIC 30), 49–58. http://aclweb.org/anthology/Y/Y16/Y16-2002.pdf
+- Kim, M., & Park, J. (2022). A note on constituent parsing for Korean. *Natural Language Engineering*, 28(2), 199–222. https://doi.org/10.1017/S1351324920000479
+- Park, J., & Tyers, F. (2019). A New Annotation Scheme for the Sejong Part-of-speech Tagged Corpus. *Proceedings of the 13th Linguistic Annotation Workshop*, 195–202. https://www.aclweb.org/anthology/W19-4022
+- Park, J., Hong, J.-P., & Cha, J.-W. (2016). Korean Language Resources for Everyone. *Proceedings of the 30th Pacific Asia Conference on Language, Information and Computation: Oral Papers (PACLIC 30)*, 49–58. http://aclweb.org/anthology/Y/Y16/Y16-2002.pdf
 
 
