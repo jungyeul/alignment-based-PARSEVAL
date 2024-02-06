@@ -1,5 +1,5 @@
 1d0
-< Current time: 02/06/24 23:12:35.307251000 UTC
+< Current time: 02/06/24 23:38:49.136240000 UTC
 11c10
 <    7   30    0    0.00   0.00     0     17    0      0     22     0     0.00
 ---
@@ -57,7 +57,7 @@
 < No crossing               =  68.51
 < 2 or less crossing        =  89.48
 < Tagging accuracy          =  97.44
-< Current time: 02/06/24 23:12:38.824735000 UTC
+< Current time: 02/06/24 23:38:52.658653000 UTC
 ---
 > Number of sentence        =   2245
 > Number of Error sentence  =      1
