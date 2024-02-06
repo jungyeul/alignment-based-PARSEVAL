@@ -5,10 +5,10 @@ from collections import defaultdict
 from nltk.tree import *
 
 
-# # check the arguments
-# assert len(sys.argv) == 3, "Usage: python jp-evalb.py gold_file_name sys_file_name"
-# gold_file_name = os.path.join(os.getcwd(), sys.argv[1])
-# sys_file_name = os.path.join(os.getcwd(), sys.argv[2])
+# check the arguments
+assert len(sys.argv) == 3, "Usage: python jp-evalb.py gold_file_name sys_file_name"
+gold_file_name = os.path.join(os.getcwd(), sys.argv[1])
+sys_file_name = os.path.join(os.getcwd(), sys.argv[2])
 
 # global configuration for the evaluation
 DELETED_LABELS_COLLINS = {"TOP", "-NONE-", ",", ":", "``", "''", "."}
@@ -20,7 +20,6 @@ DELETED_LABELS = None
 CHECK_CONS_LABELS = True
 LANGUAGE = 'default'
 IGNORE_EMPTY_CONS = True
-EVALB = False
 
 TOTAL_match = 0
 TOTAL_bn1 = 0
@@ -52,8 +51,6 @@ TOT40_error_sent = 0
 TOT40_skip_sent = 0
 TOT40_comp_sent = 0
 
-SYS_PUNC_CNT = []
-GOLD_PUNC_CNT = []
 
 # Helper class for writing to file
 class EvalFileWriter:
@@ -127,7 +124,7 @@ class EvalFileWriter:
         
         global TOTAL_sent, TOTAL_error_sent, TOTAL_skip_sent, TOTAL_comp_sent
         
-        self.write_line("=== Summary ===\n\n")
+        self.write_line("=== Summary ===\n")
 
         sentn = TOTAL_sent - TOTAL_error_sent - TOTAL_skip_sent
 
@@ -182,22 +179,7 @@ class EvalFileWriter:
     def __init__(self, file_name):
         self._file_name = file_name
         self.clear_file()
-
-
-def clean_tree(tree, punc_cnt):
-    LABEL_TO_DELETE = DELETED_LABELS_COLLINS
-    if len(tree) == 1 and isinstance(tree[0], str):
-        return tree
-    else:
-        new_tree = Tree(tree.label(), [])
-        for subtree in tree:
-            if subtree.label() not in LABEL_TO_DELETE:
-                new_tree.append(clean_tree(subtree, punc_cnt))
-            else:
-                punc_cnt[-1] += 1
-        return new_tree
-
-
+        
 # function for extracting leaves and trees from the parsed data
 def extract_leaves_and_trees(sys, gold): # parsed (L) and parsed_gold (R) "lists";
     L_trees = []
@@ -224,17 +206,6 @@ def extract_leaves_and_trees(sys, gold): # parsed (L) and parsed_gold (R) "lists
         R_trees.append(tree)
         R_leaves.append(" ".join(leaves).lower())
 
-    if EVALB:
-        temp = []
-        for tree in L_trees:
-            SYS_PUNC_CNT.append(0)
-            temp.append(clean_tree(tree, SYS_PUNC_CNT))
-        L_trees = temp
-        temp = []
-        for tree in R_trees:
-            GOLD_PUNC_CNT.append(0)
-            temp.append(clean_tree(tree, GOLD_PUNC_CNT))
-        R_trees = temp
 
     return L_trees, R_trees, L_leaves, R_leaves
 
@@ -532,24 +503,16 @@ def word_alignment(L_trees_merged, R_trees_merged):
 
 # function for getting the constituents
 def get_constituents(tree,start_index=0):
-    if EVALB:
-        constituents = list()
-    else:
-        constituents = set()
+    constituents = set()
     
     if tree.height() > 2:
         end_index = start_index + len(tree.leaves())
-        if EVALB:
-            constituents.append((tree.label(), start_index, end_index, " ".join(tree.leaves())))
-        else:
-            constituents.add((tree.label(), start_index, end_index, " ".join(tree.leaves())))
+        leaves = "".join(tree.leaves())
+        constituents.add((tree.label(), start_index, end_index, " ".join(tree.leaves())))
 
 
         for phrase in tree:
-            if EVALB:
-                constituents.extend(get_constituents(phrase, start_index))
-            else:
-                constituents.update(get_constituents(phrase, start_index))
+            constituents.update(get_constituents(phrase, start_index))
             start_index += len(phrase.leaves())
             
     return constituents
@@ -674,10 +637,6 @@ def get_constituents_by_reindexing(L_trees_merged, R_trees_merged, L_word_aligne
 
 # function for traversing the tree
 def traverse_tree(tree):
-    if EVALB:
-        DELETED_LABELS = DELETED_LABELS_COLLINS
-    else:
-        DELETED_LABELS = None
     if len(tree) == 1 and isinstance(tree[0], str):
         if DELETED_LABELS is None or tree.label() not in DELETED_LABELS:
             return [(tree.label(), tree[0])]
@@ -693,16 +652,6 @@ def traverse_tree(tree):
 def cal_bracket(sys_cons, gold_cons):
     if CHECK_CONS_LABELS:
         matched_bracket = len(set(sys_cons) & set(gold_cons))
-        if EVALB:
-            left = set(sys_cons) - set(gold_cons)
-            right = set(gold_cons) - set(sys_cons)
-            cnt = 0
-            for con1 in left:
-                for con2 in right:
-                    if con1[1] == con2[1] and con1[2] == con2[2] and set([con1[0], con2[0]]) == set(["ADVP", "PRT"]):
-                        cnt += 1
-
-            matched_bracket += cnt
     else:
         matched_bracket = len(set([(tup[1], tup[2]) for tup in sys_cons]) & set([(tup[1], tup[2]) for tup in gold_cons]))
     
@@ -743,7 +692,8 @@ def get_eval_result(id, sys_words, gold_words, sys_cons, gold_cons, sys_tree, go
         sys_tags_cnt[tag] += 1
     
     tags_tp = sum([min(gold_tags_cnt[tag], sys_tags_cnt[tag]) for tag in sys_tags_cnt])
-    if LANGUAGE == "en" or EVALB:
+
+    if LANGUAGE == "en":
         tags_tp = sum([sys_tags[i] == gold_tags[i] for i in range(len(sys_tags))])
 
     TOTAL_match += matched_bracket
@@ -759,7 +709,7 @@ def get_eval_result(id, sys_words, gold_words, sys_cons, gold_cons, sys_tree, go
     # ID
     result = [id]
     # Len.
-    result.append(len(gold_words) + GOLD_PUNC_CNT[id - 1])
+    result.append(len(gold_words))
     # Stat.
     result.append(0)
     # Recal
@@ -815,10 +765,6 @@ def main(argv):
     
     gold_file_name = os.path.join(os.getcwd(), argv[1])
     sys_file_name = os.path.join(os.getcwd(), argv[2])
-
-    if len(argv) == 4 and argv[3] == "-evalb":
-        global EVALB
-        EVALB = True
     
     eval_writer = EvalFileWriter('jp-evalb.txt')
     time_start = datetime.datetime.now()
@@ -829,6 +775,9 @@ def main(argv):
     parsed_sys = parse_file(sys_file_name)
 
     # L = sys, R = gold
+    L_trees, R_trees, L_leaves, R_leaves = extract_leaves_and_trees(parsed_sys, parsed_gold) 
+
+
     L_trees, R_trees, L_leaves, R_leaves = extract_leaves_and_trees(parsed_sys, parsed_gold) 
     L_trees_aligned, R_trees_aligned, L_leaves_aligned, R_leaves_aligned = sentence_alignment(L_trees, R_trees, L_leaves, R_leaves)
     L_trees_merged = merging_trees(L_trees_aligned)
@@ -852,5 +801,5 @@ def main(argv):
     print('  END:', time_end)
     
 if __name__ == "__main__":
-    assert len(sys.argv) == 3 or len(sys.argv) == 4, "Usage: python jp-evalb.py gold_file_name sys_file_name"
+    assert len(sys.argv) == 3, "Usage: python jp-evalb.py gold_file_name sys_file_name"
     main(sys.argv)
