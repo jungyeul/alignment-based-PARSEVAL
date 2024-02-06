@@ -4,10 +4,8 @@ START: 2024-01-21 12:00:50.199230
   END: 2024-01-21 12:00:54.701044
 ```
 
-This page shows how to reproduce the original evalb's reuslts by using jp-evalb, and we provide the `diff.txt` file. 
-The diff file shows that we reproduced the exactly same results by discarding punctuation marks. 
-One sentence result would be different because their token numbers are matched, and evalb could not deal with it:
+This page demonstrates how to replicate the original results from evalb using jp-evalb. We provide the `diff.txt` file, which indicates that we have successfully reproduced the exact results by excluding punctuation marks. However, there may be a discrepancy in a single sentence due to matching token numbers, which evalb cannot handle. Consequently, the final results for all sentences differ between evalb (`evalb.txt`) and jp-evalb (`jp-evalb-original.txt`).
 ```
 1962 : Length unmatch (19|18)
 ```
-Therefore, the final result for all sentences are different between evalb and jp-evalb.  
+
