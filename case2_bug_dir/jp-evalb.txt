@@ -1,4 +1,4 @@
-Current time: 01/21/24 20:01:53.659795000 UTC
+Current time: 01/22/24 05:03:51.949750000 UTC
   Sent.                        Matched  Bracket   Cross        Correct Tag
  ID  Len.  Stat. Recal  Prec.  Bracket gold test Bracket Words  Tags Accracy
 ============================================================================
@@ -37,4 +37,4 @@ Average crossing          =   5.00
 No crossing               =   0.00
 2 or less crossing        =  33.33
 Tagging accuracy          =  77.65
-Current time: 01/21/24 20:01:53.716729000 UTC
+Current time: 01/22/24 05:03:52.007311000 UTC
