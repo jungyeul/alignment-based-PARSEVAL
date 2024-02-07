@@ -16,7 +16,11 @@ OUTPUT:
 
 - [`Cross Bracket`] The number of cross brackets. 
 
-- [`Words`, `Correct Tags`, `Tag Accuracy`] Evaluation of the number of words, correct POS tags, and POS tagging accuracy. It's important to highlight that `evalb` excludes any problematic symbols and punctuation marks when counting words and correct POS tags. Our results include all tokens in the given sentence, and accuracy is calculated based on the correct number of POS-tagged words in comparison to the gold sentence.
+- [`Words`, `Correct Tags`, `Tag Accuracy`] Evaluation of the number of words, correct POS tags, and POS tagging accuracy.
+
+
+It's important to note that the original `evalb` excludes problematic symbols and punctuation marks in the tree structure. Our results include all tokens in the given sentence, and bracket numbers reflect the actual constituents in the system and gold parse trees. 
+Accuracy is determined by comparing the correct number of POS-tagged words to the gold sentence, differing from the original `evalb` which doesn't consider word counts or correct POS tags. However, we offer an `--evalb` option to precisely replicate `evalb` results, using the `COLLINS.prm` file with its default values.
 
 
 This GitHub repository includes the following case studies: 
