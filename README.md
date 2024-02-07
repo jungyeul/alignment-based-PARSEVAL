@@ -1,5 +1,12 @@
 # Alignment-based PARSEVAL Measures
 ---
+
+We introduce an evaluation system designed to compute PARSEVAL measures, offering a viable alternative to \texttt{evalb} commonly used for constituency parsing evaluation.
+The widely used `evalb` script has traditionally been employed for evaluating the accuracy of constituency parsing results, albeit with the requirement for consistent tokenization and sentence boundaries. 
+In contrast, our approach, named `jp-evalb`, is founded on an alignment method. This method aligns sentences and words when discrepancies arise.
+It aims to overcome several known issues associated with `evalb` by utilizing the **jointly preprocessed (JP)** alignment-based method.
+
+
 `jp-evalb` or Jointly Preprocessed `evalb`. 
 
 
