@@ -27,7 +27,7 @@ OUTPUT:
 
 
 It's important to note that the original `evalb` excludes problematic symbols and punctuation marks in the tree structure. Our results include all tokens in the given sentence, and bracket numbers reflect the actual constituents in the system and gold parse trees. 
-Accuracy is determined by comparing the correct number of POS-tagged words to the gold sentence, differing from the original `evalb` which doesn't consider word counts or correct POS tags. However, we offer an `-evalb` option to precisely replicate `evalb` results, using the `COLLINS.prm` file with its default values (See Case Study 1).
+Accuracy is determined by comparing the correct number of POS-tagged words to the gold sentence, differing from the original `evalb` which doesn't consider word counts or correct POS tags for punctuation marks. However, we offer an `-evalb` option to precisely replicate `evalb` results, using the `COLLINS.prm` file with its default values (See Case Study 1).
 
 
 This GitHub repository includes the following case studies: 
