@@ -32,7 +32,7 @@ Accuracy is determined by comparing the correct number of POS-tagged words to th
 
 This GitHub repository includes the following case studies: 
 
-1. Evaluation for Section 23 of the English Penn treebank (reproducing the original 'evalb' results)
+1. Evaluation for Section 23 of the English Penn treebank (reproducing the original `evalb` results)
 
 2. Bug cases identified by `evalb`
 
