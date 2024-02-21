@@ -1,13 +1,39 @@
 ```
-case1_ptb23_dir % python3 ../jp-evalb.py 23.gold 23.sys_berkeley_top -evalb 
-START: 2024-01-21 12:00:50.199230
-  END: 2024-01-21 12:00:54.701044
+case1_ptb23_dir % python3 ../jp-evalb.py 23.gold 23.sys_berkeley_top -evalb COLLINS.prm
 ```
 
-This page demonstrates how to replicate the original results from `evalb` using `jp-evalb`. The parsed results were obtained using the PCFG-LA Berkeley parser. We provide the `diff.txt` file, which indicates that we have successfully reproduced the exact results by excluding punctuation marks. However, there may be a discrepancy in a single sentence due to mismatching token numbers, which `evalb` cannot handle. Consequently, the final results for all sentences differ between evalb (`evalb.txt`) and jp-evalb (`jp-evalb-legacy.txt`).
+This page demonstrates how to replicate the original results from `evalb` using `jp-evalb` with a `-evalb` option. The parsed results were obtained using the PCFG-LA Berkeley parser. B
+This option can utilize the default values from the `COLLINS.prm` file if the parameter file is not provided.
+It will accurately reproduce `evalb` results, even in cases where there are discrepancies such as `Length unmatch` and `Words unmatch` errors in `evalb`'s output. 
 
 `evalb`'s error message: 
 ```
 1962 : Length unmatch (19|18)
 ```
 
+We also present Dan Bikel's compare.pl comparison results between evalb and jp-evalb using the -evalb option, demonstrating their identical outcomes:
+```
+case1_ptb23_dir % perl compare.pl evalb.txt jp-evalb-legacy.txt 
+43993
+model1: recall=89.7986405660151, precision=90.3007371627303
+model2: recall=89.7986405660151, precision=90.3007371627303
+model2 recall - model1 recall = 0
+model2 precision - model1 precision = 0
+Doing random shuffle 10000 times.
+Completed 1000 iterations
+Completed 2000 iterations
+Completed 3000 iterations
+Completed 4000 iterations
+Completed 5000 iterations
+Completed 6000 iterations
+Completed 7000 iterations
+Completed 8000 iterations
+Completed 9000 iterations
+number of random recall diferences equal to or greater than
+	original observed difference: 10000
+number of random precision diferences equal to or greater than
+	original observed difference: 10000
+p-value for recall diff: 1
+p-value for precision diff: 1
+p-value for Fscore diff: 1 
+```
