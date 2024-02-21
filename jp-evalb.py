@@ -11,12 +11,22 @@ from nltk.tree import *
 # sys_file_name = os.path.join(os.getcwd(), sys.argv[2])
 
 # global configuration for the evaluation
-DELETED_LABELS_COLLINS = {"TOP", "-NONE-", ",", ":", "``", "''", "."}
-DELETED_LABELS_NEW = DELETED_LABELS_COLLINS | {"S1", "?", "!"}
+PARAMS = None
+PARAMS_COLLINS = {
+            'DEBUG': '0',
+            'MAX_ERROR': '10',
+            'CUTOFF_LEN': '40',
+            'LABELED': '1',
+            'DELETE_LABEL': ['TOP', '-NONE-', ',', ':', '``', "''", '.'],
+            'DELETE_LABEL_FOR_LENGTH': '-NONE-',
+            'EQ_LABEL': [('ADVP', 'PRT')]
+        }
 
 english_token_exception = {'\'\'':'\"',  '`':'\'', '``': '\"', 'ca': 'can', 'wo':'will', 'n\'t':'not'}
 
-DELETED_LABELS = None
+# ref: EVALB line 1451
+QUOTE_TERMS = ['\'', '\"', '/']
+
 CHECK_CONS_LABELS = True
 LANGUAGE = 'default'
 IGNORE_EMPTY_CONS = True
@@ -54,6 +64,49 @@ TOT40_comp_sent = 0
 
 SYS_PUNC_CNT = []
 GOLD_PUNC_CNT = []
+
+class PRMDict(dict):
+    DEFAULTS_PARAMS = {
+        "DEBUG": 0,
+        "MAX_ERROR": 10,
+        "CUTOFF_LEN": 40,
+        "LABELED": 1,
+        "DELETE_LABEL_FOR_LENGTH": "-NONE-",
+    }
+
+    def __getitem__(self, key):
+        if key in self:
+            return super().__getitem__(key)
+        else:
+            return None
+
+    def add(self, key, value):
+        if key in self:
+            if not isinstance(self[key], list):
+                super().__setitem__(key, [self[key]])
+            self[key].append(value)
+        else:
+            super().__setitem__(key, value)
+
+    def add_default_params(self):
+        for key, _ in self.DEFAULTS_PARAMS.items():
+            if key not in self:
+                self.add(key, self.DEFAULTS_PARAMS[key])
+
+
+    def initialize(self):
+        if "EQ_LABEL" in self and not isinstance(self["EQ_LABEL"], list):
+            self["EQ_LABEL"] = [self["EQ_LABEL"]]
+        
+        if "DELETE_LABEL" in self and not isinstance(self["DELETE_LABEL"], list):
+            self["DELETE_LABEL"] = [self["DELETE_LABEL"]]
+        
+        if "DELETE_LABEL_FOR_LENGTH" in self and not isinstance(self["DELETE_LABEL_FOR_LENGTH"], list):
+            self["DELETE_LABEL_FOR_LENGTH"] = [self["DELETE_LABEL_FOR_LENGTH"]]
+        
+        if "QUOTE_LABEL" in self and not isinstance(self["QUOTE_LABEL"], list):
+            self["QUOTE_LABEL"] = [self["QUOTE_LABEL"]]
+
 
 # Helper class for writing to file
 class EvalFileWriter:
@@ -105,7 +158,7 @@ class EvalFileWriter:
         output = ""
     
         if TOTAL_bn1 > 0 and TOTAL_bn2 > 0:
-            output += "                {:6.2f} {:6.2f} {:5d} {:5d} {:5d}  {:5d}".format(
+            output += "                {:6.2f} {:6.2f}  {:5d} {:5d} {:5d}  {:5d}".format(
                 100.0 * TOTAL_match / TOTAL_bn1 if TOTAL_bn1 > 0 else 0.0,
                 100.0 * TOTAL_match / TOTAL_bn2 if TOTAL_bn2 > 0 else 0.0,
                 TOTAL_match,
@@ -143,7 +196,7 @@ class EvalFileWriter:
         p = 100.0 * TOTAL_match / TOTAL_bn2 if TOTAL_bn2 > 0 else 0.0
         self.write_line("Bracketing Precision      = {:6.2f}\n".format(p))
 
-        f = 2 * p * r / (p + r) if (p + r) > 0 else 0.0
+        f = 2 * p * r / (p + r) if (p + r) > 0 else float('nan')
         self.write_line("Bracketing FMeasure       = {:6.2f}\n".format(f))
 
         self.write_line("Complete match            = {:6.2f}\n".format(100.0 * TOTAL_comp_sent / sentn if sentn > 0 else 0.0))
@@ -168,7 +221,7 @@ class EvalFileWriter:
         p = 100.0 * TOT40_match / TOT40_bn2 if TOT40_bn2 > 0 else 0.0
         self.write_line("Bracketing Precision      = {:6.2f}\n".format(p))
 
-        f = 2 * p * r / (p + r) if (p + r) > 0 else 0.0
+        f = 2 * p * r / (p + r) if (p + r) > 0 else float('nan')
         self.write_line("Bracketing FMeasure       = {:6.2f}\n".format(f))
 
         self.write_line("Complete match            = {:6.2f}\n".format(100.0 * TOT40_comp_sent / sentn if sentn > 0 else 0.0))
@@ -184,17 +237,39 @@ class EvalFileWriter:
         self.clear_file()
 
 
+def parse_prm(prm_file):
+    with open(prm_file, 'r') as f:
+        prm = f.readlines()
+    prm = [x.strip() for x in prm]
+    prm = [x for x in prm if x and not x.startswith('#')]
+    prm = [x.split() for x in prm]
+    
+    ret_prm = PRMDict()
+    for x in prm:
+        if len(x[1:]) == 1:
+            ret_prm.add(x[0], x[1])
+        else:
+            ret_prm.add(x[0], tuple(x[1:]))
+    ret_prm.add_default_params()
+    ret_prm.initialize()
+    
+    return ret_prm
+
+
 def clean_tree(tree, punc_cnt):
-    LABEL_TO_DELETE = DELETED_LABELS_COLLINS
+    LABEL_TO_DELETE = set(PARAMS['DELETE_LABEL']) if 'DELETE_LABEL' in PARAMS and PARAMS['DELETE_LABEL'] else set()
+    DELETE_LABEL_FOR_LENGTH = set(PARAMS['DELETE_LABEL_FOR_LENGTH']) if 'DELETE_LABEL_FOR_LENGTH' in PARAMS and PARAMS['DELETE_LABEL_FOR_LENGTH'] else set()
+    QUOTE_LABEL = set(PARAMS['QUOTE_LABEL']) if 'QUOTE_LABEL' in PARAMS and PARAMS['QUOTE_LABEL'] else set()
     if len(tree) == 1 and isinstance(tree[0], str):
         return tree
     else:
         new_tree = Tree(tree.label(), [])
         for subtree in tree:
-            if subtree.label() not in LABEL_TO_DELETE:
+            if not (subtree.label() in LABEL_TO_DELETE or (subtree.label() in QUOTE_LABEL and subtree[0] in set(QUOTE_TERMS))):
                 new_tree.append(clean_tree(subtree, punc_cnt))
-            else:
+            elif subtree.label() not in DELETE_LABEL_FOR_LENGTH:
                 punc_cnt[-1] += 1
+
         return new_tree
 
 
@@ -224,17 +299,16 @@ def extract_leaves_and_trees(sys, gold): # parsed (L) and parsed_gold (R) "lists
         R_trees.append(tree)
         R_leaves.append(" ".join(leaves).lower())
 
-    if EVALB:
-        temp = []
-        for tree in L_trees:
-            SYS_PUNC_CNT.append(0)
-            temp.append(clean_tree(tree, SYS_PUNC_CNT))
-        L_trees = temp
-        temp = []
-        for tree in R_trees:
-            GOLD_PUNC_CNT.append(0)
-            temp.append(clean_tree(tree, GOLD_PUNC_CNT))
-        R_trees = temp
+    temp = []
+    for tree in L_trees:
+        SYS_PUNC_CNT.append(0)
+        temp.append(clean_tree(tree, SYS_PUNC_CNT))
+    L_trees = temp
+    temp = []
+    for tree in R_trees:
+        GOLD_PUNC_CNT.append(0)
+        temp.append(clean_tree(tree, GOLD_PUNC_CNT))
+    R_trees = temp
 
     return L_trees, R_trees, L_leaves, R_leaves
 
@@ -409,7 +483,7 @@ def word_alignment_by_sent(l, r):
                 if len(L) == 0:
                     L = aa
                 else:
-                    L[-1] = L[-1] + aa
+                    L[-1] = [L[-1]] + aa
 
             elif ii >= len(a):
                 bb = []
@@ -532,24 +606,15 @@ def word_alignment(L_trees_merged, R_trees_merged):
 
 # function for getting the constituents
 def get_constituents(tree,start_index=0):
-    if EVALB:
-        constituents = list()
-    else:
-        constituents = set()
+    constituents = list()
     
     if tree.height() > 2:
         end_index = start_index + len(tree.leaves())
-        if EVALB:
-            constituents.append((tree.label(), start_index, end_index, " ".join(tree.leaves())))
-        else:
-            constituents.add((tree.label(), start_index, end_index, " ".join(tree.leaves())))
+        constituents.append((tree.label(), start_index, end_index, " ".join(tree.leaves())))
 
 
         for phrase in tree:
-            if EVALB:
-                constituents.extend(get_constituents(phrase, start_index))
-            else:
-                constituents.update(get_constituents(phrase, start_index))
+            constituents.extend(get_constituents(phrase, start_index))
             start_index += len(phrase.leaves())
             
     return constituents
@@ -674,10 +739,7 @@ def get_constituents_by_reindexing(L_trees_merged, R_trees_merged, L_word_aligne
 
 # function for traversing the tree
 def traverse_tree(tree):
-    if EVALB:
-        DELETED_LABELS = DELETED_LABELS_COLLINS
-    else:
-        DELETED_LABELS = None
+    DELETED_LABELS = set(PARAMS['DELETE_LABEL']) if PARAMS['DELETE_LABEL'] else set()
     if len(tree) == 1 and isinstance(tree[0], str):
         if DELETED_LABELS is None or tree.label() not in DELETED_LABELS:
             return [(tree.label(), tree[0])]
@@ -693,14 +755,15 @@ def traverse_tree(tree):
 def cal_bracket(sys_cons, gold_cons):
     if CHECK_CONS_LABELS:
         matched_bracket = len(set(sys_cons) & set(gold_cons))
-        if EVALB:
+        if EVALB or PARAMS['EQ_LABEL']:
             left = set(sys_cons) - set(gold_cons)
             right = set(gold_cons) - set(sys_cons)
             cnt = 0
             for con1 in left:
                 for con2 in right:
-                    if con1[1] == con2[1] and con1[2] == con2[2] and set([con1[0], con2[0]]) == set(["ADVP", "PRT"]):
-                        cnt += 1
+                    for eq_labels in PARAMS['EQ_LABEL']:
+                        if con1[1] == con2[1] and con1[2] == con2[2] and set([con1[0], con2[0]]).issubset(eq_labels):
+                            cnt += 1
 
             matched_bracket += cnt
     else:
@@ -715,6 +778,15 @@ def cal_bracket(sys_cons, gold_cons):
     
     return matched_bracket, cross_bracket
 
+def flatten_list(l):
+    ret_list = []
+    for item in l:
+        if isinstance(item, list):
+            ret_list.extend(flatten_list(item))
+        else:
+            ret_list.append(item)
+    return ret_list
+
 # function for getting the evaluation result
 def get_eval_result(id, sys_words, gold_words, sys_cons, gold_cons, sys_tree, gold_tree):
     global TOTAL_match, TOTAL_bn1, TOTAL_bn2, TOTAL_crossing, TOTAL_no_crossing
@@ -724,11 +796,11 @@ def get_eval_result(id, sys_words, gold_words, sys_cons, gold_cons, sys_tree, go
     global TOT40_match, TOT40_bn1, TOT40_bn2, TOT40_crossing, TOT40_no_crossing
     global TOT40_2L_crossing, TOT40_word, TOT40_correct_tag
     global TOT40_sent, TOT40_error_sent, TOT40_skip_sent, TOT40_comp_sent
-    
+
     if IGNORE_EMPTY_CONS:
-        sys_cons = [con for con in sys_cons if con[0] != ""]
+        sys_cons = [con for con in sys_cons if con[0] != "" and con[0]!="S1"]
         gold_cons = [con for con in gold_cons if con[0] != ""]
-    
+
     matched_bracket, cross_bracket = cal_bracket(sys_cons, gold_cons)
     sys_tags = traverse_tree(sys_tree)
     gold_tags = traverse_tree(gold_tree)
@@ -744,8 +816,17 @@ def get_eval_result(id, sys_words, gold_words, sys_cons, gold_cons, sys_tree, go
     
     tags_tp = sum([min(gold_tags_cnt[tag], sys_tags_cnt[tag]) for tag in sys_tags_cnt])
     if LANGUAGE == "en" or EVALB:
-        tags_tp = sum([sys_tags[i] == gold_tags[i] for i in range(len(sys_tags))])
+        tags_tp = sum([sys_tags[i] == gold_tags[i] for i in range(min(len(sys_tags), len(gold_tags)))])
 
+    TOTAL_sent += 1
+    sent_length = len(flatten_list(gold_words)) + GOLD_PUNC_CNT[id - 1]
+    if EVALB and len(sys_tags) != len(gold_tags):
+        TOTAL_error_sent += 1
+        if sent_length <= 40:
+            TOT40_sent += 1
+            TOT40_error_sent += 1
+        return [id, sent_length, 1, 0.0, 0.0, 0, 0, 0, 0, 0, 0, 0.0]
+    
     TOTAL_match += matched_bracket
     TOTAL_bn1 += len(gold_cons)
     TOTAL_bn2 += len(sys_cons)
@@ -759,17 +840,13 @@ def get_eval_result(id, sys_words, gold_words, sys_cons, gold_cons, sys_tree, go
     # ID
     result = [id]
     # Len.
-    if EVALB:
-        result.append(len(gold_words) + GOLD_PUNC_CNT[id - 1])
-    else:
-        result.append(len(gold_words))
+    result.append(sent_length)
     # Stat.
     result.append(0)
     # Recal
     result.append(matched_bracket/len(gold_cons)*100 if len(gold_cons) else 0)
     # Prec.
     result.append(matched_bracket/len(sys_cons)*100 if len(sys_cons) else 0)
-    
     # Matched Bracket
     result.append(matched_bracket)
     # Bracket gold
@@ -778,7 +855,6 @@ def get_eval_result(id, sys_words, gold_words, sys_cons, gold_cons, sys_tree, go
     result.append(len(sys_cons))
     # Cross Bracket
     result.append(cross_bracket)
-    
     # Words
     result.append(len(gold_tags))
     # Correct Tags
@@ -786,10 +862,9 @@ def get_eval_result(id, sys_words, gold_words, sys_cons, gold_cons, sys_tree, go
     # Tag Accuracy
     result.append(tags_tp/len(gold_tags)*100 if len(gold_tags) else 0)
     
-    TOTAL_sent += 1
-    TOTAL_comp_sent += (set(sys_cons) == set(gold_cons))
+    TOTAL_comp_sent += (len(gold_cons) == len(sys_cons) and len(gold_cons) == matched_bracket)
 
-    if len(gold_words) <= 40:
+    if len(gold_words) + GOLD_PUNC_CNT[id - 1] <= 40:
         TOT40_match += matched_bracket
         TOT40_bn1 += len(gold_cons)
         TOT40_bn2 += len(sys_cons)
@@ -799,7 +874,7 @@ def get_eval_result(id, sys_words, gold_words, sys_cons, gold_cons, sys_tree, go
         TOT40_word += len(gold_tags)
         TOT40_correct_tag += tags_tp
         TOT40_sent += 1
-        TOT40_comp_sent += (set(sys_cons) == set(gold_cons))
+        TOT40_comp_sent += (len(gold_cons) == len(sys_cons) and len(gold_cons) == matched_bracket)
     
     return result
 
@@ -819,10 +894,24 @@ def main(argv):
     gold_file_name = os.path.join(os.getcwd(), argv[1])
     sys_file_name = os.path.join(os.getcwd(), argv[2])
 
-    if len(argv) == 4 and argv[3] == "-evalb":
-        global EVALB
-        EVALB = True
-    
+    global PARAMS, EVALB, LANGUAGE
+    PARAMS = PRMDict()
+    if len(argv) == 4:
+        if argv[3] == "-evalb":
+            EVALB = True
+            PARAMS = PARAMS_COLLINS
+        elif argv[3].endswith(".prm"):
+            PARAMS = parse_prm(os.path.join(os.getcwd(), argv[3]))
+        else:
+            raise ValueError("Invalid argument: " + argv[3])
+
+    if len(argv) == 5:
+        if argv[3] == "-evalb" and argv[4].endswith(".prm"):
+            EVALB = True
+            PARAMS = parse_prm(os.path.join(os.getcwd(), argv[4]))
+        else:
+            raise ValueError("Invalid argument: " + argv[3] + " " + argv[4])
+
     eval_writer = EvalFileWriter('jp-evalb.txt')
     time_start = datetime.datetime.now()
     eval_writer.write_current_time()
@@ -849,11 +938,9 @@ def main(argv):
     eval_writer.write_eval_output()
     eval_writer.write_eval_summary()
 
-    time_end = datetime.datetime.now()
-
-    print('START:', time_start)
-    print('  END:', time_end)
+    with open('jp-evalb.txt', 'r', encoding="utf-8") as file:
+        print(file.read())
     
 if __name__ == "__main__":
-    assert len(sys.argv) == 3 or len(sys.argv) == 4, "Usage: python jp-evalb.py gold_file_name sys_file_name"
+    assert 3<=len(sys.argv)<=5, "Usage: python jp-evalb.py gold_file_name sys_file_name -evalb(optional) param.prm(optional)"
     main(sys.argv)

@@ -2450,4 +2450,3 @@ No crossing               =  67.88
 2 or less crossing        =  89.49
 Tagging accuracy          =  97.73
 Current time: 02/21/24 19:41:29.243410000 UTC
-
