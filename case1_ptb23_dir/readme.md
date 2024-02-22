@@ -2,7 +2,7 @@
 case1_ptb23_dir % python3 ../jp-evalb.py 23.gold 23.sys_berkeley_top -evalb COLLINS.prm
 ```
 
-This page demonstrates how to replicate the original results from `evalb` using `jp-evalb` with the `-evalb` option. The parsed results were obtained using the PCFG-LA Berkeley parser. When the parameter file is not provided, this option can utilize the default values from the `COLLINS.prm` file. It will accurately reproduce evalb results, even in cases where discrepancies such as Length unmatch and Words unmatch errors occur in evalb's output.
+This page demonstrates how to replicate the original results from `evalb` using `jp-evalb` with the `-evalb` option. The parsed results were obtained using the PCFG-LA Berkeley parser. When the parameter file is not provided, this option can utilize the default values from the `COLLINS.prm` file. It will accurately reproduce evalb results, even in cases where discrepancies such as Length unmatch and Words unmatch errors occur in `evalb`'s output.
 
 
 We also present Dan Bikel's `compare.pl` comparison results between `evalb` and `jp-evalb` using the `-evalb` option, demonstrating their identical outcomes:
