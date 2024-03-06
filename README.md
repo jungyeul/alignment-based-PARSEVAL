@@ -15,6 +15,12 @@ USAGE:
 % python3 jp-evalb.py gold_parsed_file system_parsed_file
 ```
 
+or to produce the exactly same `evalb` output: 
+```
+% python3 jp-evalb.py gold_parsed_file system_parsed_file -evalb param_file.prm
+```
+
+
 OUTPUT:
 - [`Sent. ID`, `Sent. Len.`, `Stat.`] ID, length, and status of the provided sentence, where status 0 indicates 'OK,' status 1 implies 'skip,' and status 2 represents 'error' for `evalb`. `jp-evalb` does not assign skip or error statuses.
 - [`Recall`, `Precision`] Recall and precision of constituents.
