@@ -44,5 +44,18 @@ This GitHub repository includes the following case studies:
 
 3. Korean end-to-end parsing evaluation 
 
-
-
+Citation:
+```
+@article{10.1162/coli_a_00512,
+    author = {Jo, Eunkyul Leah and Park, Angela Yoonseo and Park, Jungyeul},
+    title = "{A Novel Alignment-based Approach for PARSEVAL Measures}",
+    journal = {Computational Linguistics},
+    pages = {1-10},
+    year = {2024},
+    month = {03},
+    issn = {0891-2017},
+    doi = {10.1162/coli_a_00512},
+    url = {https://doi.org/10.1162/coli_a_00512},
+    eprint = {https://direct.mit.edu/coli/article-pdf/doi/10.1162/coli_a_00512/2344938/coli_a_00512.pdf},
+}
+```
