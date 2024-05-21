@@ -45,6 +45,7 @@ This GitHub repository includes the following case studies:
 3. Korean end-to-end parsing evaluation 
 
 Citation:
+Jo, E. L., Park, A. Y., & Park, J. (2024). **A Novel Alignment-based Approach for PARSEVAL Measures**. *Computational Linguistics*, 1–10. https://doi.org/10.1162/coli_a_00512
 ```
 @article{10.1162/coli_a_00512,
     author = {Jo, Eunkyul Leah and Park, Angela Yoonseo and Park, Jungyeul},
