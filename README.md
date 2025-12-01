@@ -45,18 +45,20 @@ This GitHub repository includes the following case studies:
 3. Korean end-to-end parsing evaluation 
 
 Citation:
-Jo, E. L., Park, A. Y., & Park, J. (2024). **A Novel Alignment-based Approach for PARSEVAL Measures**. *Computational Linguistics*, 1–10. https://doi.org/10.1162/coli_a_00512
+Jo, E. L., Park, A. Y., & Park, J. (2024). A Novel Alignment-based Approach for PARSEVAL Measuress. Computational Linguistics, 50(3), 1181–1190. https://doi.org/10.1162/coli_a_00512
 ```
-@article{10.1162/coli_a_00512,
-    author = {Jo, Eunkyul Leah and Park, Angela Yoonseo and Park, Jungyeul},
-    title = "{A Novel Alignment-based Approach for PARSEVAL Measures}",
-    journal = {Computational Linguistics},
-    pages = {1-10},
-    year = {2024},
-    month = {03},
-    issn = {0891-2017},
-    doi = {10.1162/coli_a_00512},
-    url = {https://doi.org/10.1162/coli_a_00512},
-    eprint = {https://direct.mit.edu/coli/article-pdf/doi/10.1162/coli_a_00512/2344938/coli_a_00512.pdf},
+@article{jo-etal-2024-novel,
+address = {Cambridge, MA},
+author = {Jo, Eunkyul Leah and Park, Angela Yoonseo and Park, Jungyeul},
+doi = {10.1162/coli_a_00512},
+journal = {Computational Linguistics},
+month = {sep},
+number = {3},
+pages = {1181--1190},
+publisher = {MIT Press},
+title = {{A Novel Alignment-based Approach for PARSEVAL Measuress}},
+url = {https://aclanthology.org/2024.cl-3.10},
+volume = {50},
+year = {2024}
 }
 ```
